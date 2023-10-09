@@ -11,7 +11,11 @@ public interface AccountService {
 
     Account add(SignUpRequestDto signUpRequestDto);
 
-    Account findByUsername(String username);
+    Account update(String id, AccountRequestDto accountRequestDto);
+
+    void delete(Account account);
+
+    Account getByUsername(String username);
 
     List<Account> getByRoleName(String role);
 

@@ -1,7 +1,9 @@
 package com.example.book_store.service.impl;
 
 import com.example.book_store.model.dto.request.SignUpRequestDto;
+import com.example.book_store.model.dto.request.UserRequestDto;
 import com.example.book_store.model.entity.Account;
+import com.example.book_store.model.entity.Review;
 import com.example.book_store.model.entity.User;
 import com.example.book_store.repository.UserRepository;
 import com.example.book_store.service.AccountService;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +29,6 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
-
     @Override
     public void add(SignUpRequestDto signUpRequestDto) {
         Account account = accountService.add(signUpRequestDto);
@@ -39,6 +41,31 @@ public class UserServiceImpl implements UserService {
                 .account(account)
                 .build();
         userRepository.save(user);
+    }
+
+    @Override
+    public User update(Long id, UserRequestDto userRequestDto) {
+        User user = userRepository.findById(id).get();
+        if (userRequestDto.getFirstName() != null)
+            user.setFirstName(userRequestDto.getFirstName());
+        if (userRequestDto.getLastName() != null)
+            user.setLastName(userRequestDto.getLastName());
+        if (userRequestDto.getEmail() != null)
+            user.setEmail(userRequestDto.getEmail());
+        if (userRequestDto.getContactNumber() != null)
+            user.setContactNumber(userRequestDto.getContactNumber());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void delete(String username) {
+        User user = findUserByUsername(username);
+        Account account = user.getAccount();
+        Set<Review> reviews = user.getReviews();
+        reviews.forEach(r -> r.setUser(null));
+        user.setAccount(null);
+        userRepository.delete(user);
+        accountService.delete(account);
     }
 
     @Override

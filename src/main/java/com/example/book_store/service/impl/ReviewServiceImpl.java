@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -26,7 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void add(ReviewRequestDto reviewRequestDto) {
-        Book book = bookService.findById(reviewRequestDto.getBookId());
+        Book book = bookService.getById(reviewRequestDto.getBookId());
         User user = userService.findById(reviewRequestDto.getUserId());
         Review review = Review.builder()
                 .reviewText(reviewRequestDto.getReviewText())
@@ -34,6 +35,30 @@ public class ReviewServiceImpl implements ReviewService {
                 .user(user)
                 .build();
         reviewRepository.save(review);
+    }
+
+    public Review update(Long id, ReviewRequestDto reviewRequestDto){
+        Review review = reviewRepository.findById(id).get();
+        if (reviewRequestDto.getReviewText() != null)
+            review.setReviewText(reviewRequestDto.getReviewText());
+        if (reviewRequestDto.getBookId() != null)
+            review.getBook().setId(reviewRequestDto.getBookId());
+        if (reviewRequestDto.getUserId() != null)
+            review.getUser().setId(reviewRequestDto.getUserId());
+        return reviewRepository.save(review);
+    }
+
+    @Override
+    public void delete(Long id){
+        Review review = reviewRepository.findById(id).get();
+        review.setBook(null);
+        reviewRepository.delete(review);
+    }
+
+    @Override
+    public void deleteAll(Set<Review> reviews) {
+        reviews.forEach(r -> r.setBook(null));
+        reviewRepository.deleteAll(reviews);
     }
 
     @Override

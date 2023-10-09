@@ -20,8 +20,19 @@ public class BookController {
         bookService.add(bookRequestDto);
     }
 
-    @GetMapping("/get-book/{title}")
-    public Book getByTitle(@PathVariable String title){
+    @PutMapping("/{id}")
+    public void update(@PathVariable Long id,
+                       @RequestBody BookRequestDto bookRequestDto){
+        bookService.update(id, bookRequestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        bookService.delete(id);
+    }
+
+    @GetMapping("/get-book")
+    public Book getByTitle(@RequestParam String title){
         return bookService.getBookByTitle(title);
     }
 

@@ -16,18 +16,29 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/add-review")
+    @PostMapping
     public void add(@RequestBody ReviewRequestDto reviewRequestDto){
         reviewService.add(reviewRequestDto);
     }
 
-    @GetMapping("/get-by-username/{username}")
-    public List<Review> getByUsername(@PathVariable String username){
+    @PutMapping("/{id}")
+    public void update(@PathVariable Long id,
+                       @RequestBody ReviewRequestDto reviewRequestDto){
+        reviewService.update(id, reviewRequestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        reviewService.delete(id);
+    }
+
+    @GetMapping("/get-by-username")
+    public List<Review> getByUsername(@RequestParam String username){
         return reviewService.getReviewsByUsername(username);
     }
 
-    @GetMapping("/get-by-book-title/{title}")
-    public List<ReviewResponseDto> getByBookTitle(@PathVariable String title){
+    @GetMapping("/get-by-book-title")
+    public List<ReviewResponseDto> getByBookTitle(@RequestParam String title){
         return reviewService.getReviewsByBookTitle(title);
     }
 

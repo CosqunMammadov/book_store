@@ -22,8 +22,8 @@ public class UserController {
        return userService.getAllUsers(page, size);
     }
 
-    @GetMapping("/get-by-id")
-    public User getById(@RequestParam Long id){
+    @GetMapping("/get-by-id/{id}")
+    public User getById(@PathVariable Long id){
         return userService.findById(id);
     }
 
@@ -32,8 +32,13 @@ public class UserController {
         return userService.findUserByUsername(username);
     }
 
-    @PostMapping("/add-user")
+    @PostMapping
     public void addUser(@RequestBody @Valid SignUpRequestDto signUpRequestDto){
         userService.add(signUpRequestDto);
+    }
+
+    @DeleteMapping
+    public void delete(@RequestParam String username){
+        userService.delete(username);
     }
 }

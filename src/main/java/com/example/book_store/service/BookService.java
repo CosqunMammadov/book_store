@@ -9,7 +9,11 @@ public interface BookService {
 
     void add(BookRequestDto bookRequestDto);
 
-    Book findById(Long id);
+    Book update(Long id, BookRequestDto bookRequestDto);
+
+    void delete(Long id);
+
+    Book getById(Long id);
 
     Book getBookByTitle(String title);
 

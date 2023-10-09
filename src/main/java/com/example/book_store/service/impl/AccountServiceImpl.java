@@ -4,10 +4,12 @@ import com.example.book_store.model.dto.request.AccountRequestDto;
 import com.example.book_store.model.dto.request.SignUpRequestDto;
 import com.example.book_store.model.entity.Account;
 import com.example.book_store.model.entity.Role;
+import com.example.book_store.model.entity.User;
 import com.example.book_store.model.enums.ERole;
 import com.example.book_store.repository.AccountRepository;
 import com.example.book_store.service.AccountService;
 import com.example.book_store.service.RoleService;
+import com.example.book_store.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ public class AccountServiceImpl implements AccountService {
     private final RoleService roleService;
 
     @Override
-    public Account findByUsername(String username) {
+    public Account getByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
 
@@ -54,5 +56,18 @@ public class AccountServiceImpl implements AccountService {
         throw new RuntimeException("Account not saved");
     }
 
+    @Override
+    public Account update(String id, AccountRequestDto accountRequestDto) {
+        Account account = accountRepository.findById(id).get();
+        if (accountRequestDto.getUsername() != null && accountRequestDto.getUsername() != account.getUsername())
+            account.setUsername(accountRequestDto.getUsername());
+        if (accountRequestDto.getPassword() != null)
+            account.setPassword(accountRequestDto.getPassword());
+        return accountRepository.save(account);
+    }
 
+    @Override
+    public void delete(Account account) {
+        accountRepository.delete(account);
+    }
 }
