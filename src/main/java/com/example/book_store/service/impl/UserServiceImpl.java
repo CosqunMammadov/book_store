@@ -7,8 +7,10 @@ import com.example.book_store.model.entity.Review;
 import com.example.book_store.model.entity.User;
 import com.example.book_store.repository.UserRepository;
 import com.example.book_store.service.AccountService;
+import com.example.book_store.service.ReviewService;
 import com.example.book_store.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,17 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AccountService accountService;
+    private final ReviewService reviewService;
+
+    public UserServiceImpl(UserRepository userRepository, AccountService accountService, @Lazy ReviewService reviewService) {
+        this.userRepository = userRepository;
+        this.accountService = accountService;
+        this.reviewService = reviewService;
+    }
 
     public List<User> getAllUsers(int page, int size) {
         Pageable paging = PageRequest.of(page, size);
@@ -69,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User getById(Long id) {
         return userRepository.findById(id).get();
     }
 
@@ -78,5 +86,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserByAccount_Username(username);
     }
 
-
+    @Override
+    public void addReview(Long id, Long reviewId) {
+        Review review = reviewService.getById(reviewId);
+        if (!userRepository.existsByReviews(review)){
+            User user = getById(id);
+            user.getReviews().add(review);
+            userRepository.save(user);
+        }
+    }
 }

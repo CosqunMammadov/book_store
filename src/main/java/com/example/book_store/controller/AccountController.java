@@ -21,6 +21,16 @@ public class AccountController {
         accountService.update(id, accountRequestDto);
     }
 
+    @PatchMapping("add-role/{id}")
+    public void addRole(@PathVariable String id, @RequestParam String roleName){
+        accountService.addRole(id, roleName);
+    }
+
+    @PatchMapping("delete-role/{id}")
+    public void deleteRole(@PathVariable String id, @RequestParam String roleName){
+        accountService.addRole(id, roleName);
+    }
+
     @GetMapping("/get-by-username")
     public Account getByUsername(@RequestParam String username){
         return accountService.getByUsername(username);

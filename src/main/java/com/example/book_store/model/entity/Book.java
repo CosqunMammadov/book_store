@@ -23,6 +23,7 @@ public class Book {
 
     String title;
 
+    @Column(length = 500)
     String synopsis;
 
     @OneToMany(mappedBy = "book")

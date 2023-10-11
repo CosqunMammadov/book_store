@@ -6,18 +6,23 @@ import com.example.book_store.model.entity.Review;
 import com.example.book_store.repository.BookRepository;
 import com.example.book_store.service.BookService;
 import com.example.book_store.service.ReviewService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
+
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final ReviewService reviewService;
+
+    public BookServiceImpl(BookRepository bookRepository, @Lazy ReviewService reviewService) {
+        this.bookRepository = bookRepository;
+        this.reviewService = reviewService;
+    }
 
     @Override
     public void add(BookRequestDto bookRequestDto) {

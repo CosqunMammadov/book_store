@@ -25,6 +25,9 @@ public class Review {
 
     String reviewText;
 
+    int numberOfLikes;
+
+
     @CreationTimestamp
     @Column(name = "review_date", columnDefinition = "timestamp default now()")
     LocalDateTime reviewDate;

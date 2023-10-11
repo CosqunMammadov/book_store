@@ -17,9 +17,14 @@ public interface ReviewService {
 
     void deleteAll(Set<Review> reviews);
 
-    List<Review> getReviewsByUsername(String username);
+    List<Review> getByUsername(String username);
 
-    List<ReviewResponseDto> getReviewsByBookTitle(String title);
+    List<ReviewResponseDto> getByBookTitle(String title);
+
+    Review getById(Long id);
 
     List<Review> getAllReviews();
+
+    void calculateLikes(Long id, boolean like);
+
 }

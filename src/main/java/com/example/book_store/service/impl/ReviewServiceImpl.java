@@ -28,16 +28,17 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void add(ReviewRequestDto reviewRequestDto) {
         Book book = bookService.getById(reviewRequestDto.getBookId());
-        User user = userService.findById(reviewRequestDto.getUserId());
+        User user = userService.getById(reviewRequestDto.getUserId());
         Review review = Review.builder()
                 .reviewText(reviewRequestDto.getReviewText())
                 .book(book)
                 .user(user)
+                .numberOfLikes(0)
                 .build();
         reviewRepository.save(review);
     }
 
-    public Review update(Long id, ReviewRequestDto reviewRequestDto){
+    public Review update(Long id, ReviewRequestDto reviewRequestDto) {
         Review review = reviewRepository.findById(id).get();
         if (reviewRequestDto.getReviewText() != null)
             review.setReviewText(reviewRequestDto.getReviewText());
@@ -49,7 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void delete(Long id){
+    public void delete(Long id) {
         Review review = reviewRepository.findById(id).get();
         review.setBook(null);
         reviewRepository.delete(review);
@@ -62,12 +63,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getReviewsByUsername(String username) {
+    public List<Review> getByUsername(String username) {
         return reviewRepository.findReviewsByUser_Account_Username(username);
     }
 
     @Override
-    public List<ReviewResponseDto> getReviewsByBookTitle(String title) {
+    public List<ReviewResponseDto> getByBookTitle(String title) {
         List<Review> reviews = reviewRepository.findReviewsByBook_Title(title);
         List<ReviewResponseDto> reviewResponseList = new LinkedList<>();
 
@@ -81,8 +82,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public Review getById(Long id) {
+        return reviewRepository.findById(id).get();
+    }
+
+    @Override
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
+    }
+
+    @Override
+    public void calculateLikes(Long id, boolean like) {
+        Review review = reviewRepository.findById(id).get();
+        if (like)
+            review.setNumberOfLikes(review.getNumberOfLikes() + 1);
+        reviewRepository.save(review);
     }
 
 }

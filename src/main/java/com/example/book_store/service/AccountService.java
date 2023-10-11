@@ -11,6 +11,10 @@ public interface AccountService {
 
     Account add(SignUpRequestDto signUpRequestDto);
 
+    void addRole(String id, String roleName);
+
+    void deleteRole(String id, String roleName);
+
     Account update(String id, AccountRequestDto accountRequestDto);
 
     void delete(Account account);

@@ -24,6 +24,61 @@ public class AccountServiceImpl implements AccountService {
     private final RoleService roleService;
 
     @Override
+    public Account add(SignUpRequestDto signUpRequestDto) {
+        Role role = roleService.findByRoleName(ERole.USER);
+        if (!accountRepository.existsByUsername(signUpRequestDto.getUsername())) {
+            Account account = Account.builder()
+                    .username(signUpRequestDto.getUsername())
+                    .password(signUpRequestDto.getPassword())
+                    .roles(Set.of(role))
+                    .build();
+            return accountRepository.save(account);
+        }
+        throw new RuntimeException("Account not saved");
+    }
+
+    @Override
+    public void addRole(String id, String roleName) {
+        ERole eRole = ERole.USER;
+        if (roleName.equalsIgnoreCase("ADMIN"))
+            eRole = ERole.ADMIN;
+        Role role = roleService.findByRoleName(eRole);
+        if (!accountRepository.existsByRoles(role)){
+            Account account = accountRepository.findById(id).get();
+            account.getRoles().add(role);
+            accountRepository.save(account);
+        }
+    }
+
+    @Override
+    public void deleteRole(String id, String roleName) {
+        ERole eRole = ERole.ADMIN;
+        if (roleName.equalsIgnoreCase("USER"))
+            eRole = ERole.USER;
+        Role role = roleService.findByRoleName(eRole);
+        if (accountRepository.existsByRoles(role)){
+            Account account = accountRepository.findById(id).get();
+            account.getRoles().remove(role);
+            accountRepository.save(account);
+        }
+    }
+
+    @Override
+    public Account update(String id, AccountRequestDto accountRequestDto) {
+        Account account = accountRepository.findById(id).get();
+        if (accountRequestDto.getUsername() != null && accountRequestDto.getUsername() != account.getUsername())
+            account.setUsername(accountRequestDto.getUsername());
+        if (accountRequestDto.getPassword() != null)
+            account.setPassword(accountRequestDto.getPassword());
+        return accountRepository.save(account);
+    }
+
+    @Override
+    public void delete(Account account) {
+        accountRepository.delete(account);
+    }
+
+    @Override
     public Account getByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
@@ -42,32 +97,5 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAll();
     }
 
-    @Override
-    public Account add(SignUpRequestDto signUpRequestDto) {
-        Role role = roleService.findByRoleName(ERole.USER);
-        if (!accountRepository.existsByUsername(signUpRequestDto.getUsername())) {
-            Account account = Account.builder()
-                    .username(signUpRequestDto.getUsername())
-                    .password(signUpRequestDto.getPassword())
-                    .roles(Set.of(role))
-                    .build();
-            return accountRepository.save(account);
-        }
-        throw new RuntimeException("Account not saved");
-    }
 
-    @Override
-    public Account update(String id, AccountRequestDto accountRequestDto) {
-        Account account = accountRepository.findById(id).get();
-        if (accountRequestDto.getUsername() != null && accountRequestDto.getUsername() != account.getUsername())
-            account.setUsername(accountRequestDto.getUsername());
-        if (accountRequestDto.getPassword() != null)
-            account.setPassword(accountRequestDto.getPassword());
-        return accountRepository.save(account);
-    }
-
-    @Override
-    public void delete(Account account) {
-        accountRepository.delete(account);
-    }
 }

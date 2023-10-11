@@ -2,6 +2,8 @@ package com.example.book_store.model.dto.request;
 
 import com.example.book_store.model.entity.Book;
 import com.example.book_store.model.entity.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,7 +14,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewRequestDto {
 
+    @NotBlank
     String reviewText;
+
+    @NotNull
     Long bookId;
     Long userId;
 }
