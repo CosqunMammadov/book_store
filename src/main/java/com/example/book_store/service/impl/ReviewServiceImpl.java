@@ -91,6 +91,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 //        List<Review> reviewList = reviewRepository.getAllReviews();
 //        List<Book> bookList = new LinkedList<>();
+
         reviewList.forEach(review -> System.out.println(review.getBook()));
 
         return reviewList;
