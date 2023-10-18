@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -88,7 +87,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
+        List<Review> reviewList =  reviewRepository.findAll();
+
+//        List<Review> reviewList = reviewRepository.getAllReviews();
+//        List<Book> bookList = new LinkedList<>();
+        reviewList.forEach(review -> System.out.println(review.getBook()));
+
+        return reviewList;
     }
 
     @Override

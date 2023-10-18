@@ -6,6 +6,7 @@ import com.example.book_store.model.entity.Account;
 import com.example.book_store.model.entity.Role;
 import com.example.book_store.model.entity.User;
 import com.example.book_store.model.enums.ERole;
+import com.example.book_store.model.mapper.AccountMapper;
 import com.example.book_store.repository.AccountRepository;
 import com.example.book_store.service.AccountService;
 import com.example.book_store.service.RoleService;
@@ -22,16 +23,13 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final RoleService roleService;
+    private final AccountMapper accountMapper;
 
     @Override
     public Account add(SignUpRequestDto signUpRequestDto) {
         Role role = roleService.findByRoleName(ERole.USER);
         if (!accountRepository.existsByUsername(signUpRequestDto.getUsername())) {
-            Account account = Account.builder()
-                    .username(signUpRequestDto.getUsername())
-                    .password(signUpRequestDto.getPassword())
-                    .roles(Set.of(role))
-                    .build();
+            Account account = accountMapper.signUpRequestDTOtoAccount(signUpRequestDto);
             return accountRepository.save(account);
         }
         throw new RuntimeException("Account not saved");

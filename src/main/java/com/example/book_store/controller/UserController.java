@@ -18,39 +18,39 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public void add(@RequestBody @Valid SignUpRequestDto signUpRequestDto){
+    public void add(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
         userService.add(signUpRequestDto);
     }
 
     @PatchMapping("/{id}/{reviewId}")
-    public void addReview(@PathVariable Long id, @PathVariable Long reviewId){
+    public void addReview(@PathVariable Long id, @PathVariable Long reviewId) {
         userService.addReview(id, reviewId);
     }
 
     @PutMapping("/{id}")
     public void update(@PathVariable Long id,
-                       @RequestBody UserRequestDto userRequestDto){
+                       @RequestBody UserRequestDto userRequestDto) {
         userService.update(id, userRequestDto);
     }
 
     @DeleteMapping
-    public void delete(@RequestParam String username){
+    public void delete(@RequestParam String username) {
         userService.delete(username);
     }
 
     @GetMapping("/all-users")
     public List<User> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "2") int size){
-       return userService.getAllUsers(page, size);
+                                  @RequestParam(defaultValue = "2") int size) {
+        return userService.getAllUsers(page, size);
     }
 
     @GetMapping("/get-by-id/{id}")
-    public User getById(@PathVariable Long id){
+    public User getById(@PathVariable Long id) {
         return userService.getById(id);
     }
 
     @GetMapping("/get-by-username")
-    public User getByUsername(@RequestParam String username){
+    public User getByUsername(@RequestParam String username) {
         return userService.findUserByUsername(username);
     }
 

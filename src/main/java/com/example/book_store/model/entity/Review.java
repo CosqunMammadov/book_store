@@ -32,11 +32,11 @@ public class Review {
     @Column(name = "review_date", columnDefinition = "timestamp default now()")
     LocalDateTime reviewDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     Book book;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
 

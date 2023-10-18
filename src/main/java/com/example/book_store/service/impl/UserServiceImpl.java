@@ -5,15 +5,16 @@ import com.example.book_store.model.dto.request.UserRequestDto;
 import com.example.book_store.model.entity.Account;
 import com.example.book_store.model.entity.Review;
 import com.example.book_store.model.entity.User;
+import com.example.book_store.model.mapper.UserMapper;
 import com.example.book_store.repository.UserRepository;
 import com.example.book_store.service.AccountService;
 import com.example.book_store.service.ReviewService;
 import com.example.book_store.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -24,11 +25,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AccountService accountService;
     private final ReviewService reviewService;
+    private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, AccountService accountService, @Lazy ReviewService reviewService) {
+    public UserServiceImpl(UserRepository userRepository, AccountService accountService, @Lazy ReviewService reviewService, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.accountService = accountService;
         this.reviewService = reviewService;
+        this.userMapper = userMapper;
     }
 
     public List<User> getAllUsers(int page, int size) {
@@ -38,16 +41,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public void add(SignUpRequestDto signUpRequestDto) {
         Account account = accountService.add(signUpRequestDto);
 
-        User user = User.builder()
-                .firstName(signUpRequestDto.getFirstName())
-                .lastName(signUpRequestDto.getLastName())
-                .email(signUpRequestDto.getEmail())
-                .contactNumber(signUpRequestDto.getContactNumber())
-                .account(account)
-                .build();
+        User user = userMapper.signUpRequestDtoToUser(signUpRequestDto);
         userRepository.save(user);
     }
 
