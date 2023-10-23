@@ -17,6 +17,8 @@ public class ReviewRequestDto {
     @NotBlank
     String reviewText;
 
+    Long reviewId;
+
     @NotNull
     Long bookId;
     Long userId;

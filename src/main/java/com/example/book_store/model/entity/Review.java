@@ -8,12 +8,12 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "reviews")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -39,6 +39,16 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "reviews_answers",
+            joinColumns = @JoinColumn(name = "review_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "answer_id", referencedColumnName = "id")
+    )
+    Set<Review> reviewAnswers;
+
+    @ManyToMany(mappedBy = "reviewAnswers")
+    Set<Review> reviews;
 
     @JsonBackReference
     public Book getBook(){

@@ -25,6 +25,10 @@ public interface ReviewService {
 
     List<Review> getAllReviews();
 
+    List<ReviewResponseDto> getAnswerByReviewId(Long id);
+
+    List<ReviewResponseDto> getReviewsByAnswerId(Long id);
+
     void calculateLikes(Long id, boolean like);
 
 }

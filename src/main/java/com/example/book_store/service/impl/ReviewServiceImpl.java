@@ -5,6 +5,7 @@ import com.example.book_store.model.dto.response.ReviewResponseDto;
 import com.example.book_store.model.entity.Book;
 import com.example.book_store.model.entity.Review;
 import com.example.book_store.model.entity.User;
+import com.example.book_store.model.mapper.ReviewMapper;
 import com.example.book_store.repository.ReviewRepository;
 import com.example.book_store.service.BookService;
 import com.example.book_store.service.ReviewService;
@@ -23,17 +24,15 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final BookService bookService;
+    private final ReviewMapper reviewMapper;
 
     @Override
     public void add(ReviewRequestDto reviewRequestDto) {
         Book book = bookService.getById(reviewRequestDto.getBookId());
         User user = userService.getById(reviewRequestDto.getUserId());
-        Review review = Review.builder()
-                .reviewText(reviewRequestDto.getReviewText())
-                .book(book)
-                .user(user)
-                .numberOfLikes(0)
-                .build();
+        Review review = reviewMapper.reviewRequestDtoToReview(reviewRequestDto);
+        review.setUser(user);
+        review.setBook(book);
         reviewRepository.save(review);
     }
 
@@ -71,12 +70,10 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> reviews = reviewRepository.findReviewsByBook_Title(title);
         List<ReviewResponseDto> reviewResponseList = new LinkedList<>();
 
-        reviews.forEach(review -> reviewResponseList.add(ReviewResponseDto.builder()
-                .firstName(review.getUser().getFirstName())
-                .lastName(review.getUser().getLastName())
-                .reviewText(review.getReviewText())
-                .reviewDate(review.getReviewDate())
-                .build()));
+        reviews.forEach(review -> reviewResponseList
+                .add(reviewMapper.reviewToReviewResponseDto(review,
+                        review.getUser().getFirstName(),
+                        review.getUser().getLastName())));
         return reviewResponseList;
     }
 
@@ -87,14 +84,30 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> getAllReviews() {
-        List<Review> reviewList =  reviewRepository.findAll();
-
-//        List<Review> reviewList = reviewRepository.getAllReviews();
-//        List<Book> bookList = new LinkedList<>();
-
-        reviewList.forEach(review -> System.out.println(review.getBook()));
-
+        List<Review> reviewList = reviewRepository.getAllReviews();
         return reviewList;
+    }
+
+    @Override
+    public List<ReviewResponseDto> getAnswerByReviewId(Long id){
+        List<Review> reviews = reviewRepository.getAnswerByReviewId(id);
+        List<ReviewResponseDto> reviewResponseDtoList = new LinkedList<>();
+        reviews.forEach(review -> reviewResponseDtoList
+                .add(reviewMapper.reviewToReviewResponseDto(review,
+                                review.getUser().getFirstName(),
+                                review.getUser().getLastName())));
+        return reviewResponseDtoList;
+    }
+
+    @Override
+    public List<ReviewResponseDto> getReviewsByAnswerId(Long id){
+        List<Review> reviews = reviewRepository.getReviewsByAnswerId(id);
+        List<ReviewResponseDto> reviewResponseDtoList = new LinkedList<>();
+        reviews.forEach(review -> reviewResponseDtoList
+                .add(reviewMapper.reviewToReviewResponseDto(review,
+                                review.getUser().getFirstName(),
+                                review.getUser().getLastName())));
+        return reviewResponseDtoList;
     }
 
     @Override

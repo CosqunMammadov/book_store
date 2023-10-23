@@ -48,6 +48,16 @@ public class ReviewController {
         return reviewService.getAllReviews();
     }
 
+    @GetMapping("/get-answers/{id}")
+    public List<ReviewResponseDto> getAnswerByReviewId(@PathVariable Long id){
+        return reviewService.getAnswerByReviewId(id);
+    }
+
+    @GetMapping("/get-reviews/{id}")
+    public List<ReviewResponseDto> getReviewsByAnswerid(@PathVariable Long id){
+        return reviewService.getReviewsByAnswerId(id);
+    }
+
     @PatchMapping("/{id}")
     public void calculateLikes(@PathVariable Long id, @RequestParam boolean like){
         reviewService.calculateLikes(id, like);

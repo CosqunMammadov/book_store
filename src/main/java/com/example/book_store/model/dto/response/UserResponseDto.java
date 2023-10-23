@@ -18,5 +18,4 @@ public class UserResponseDto {
     String email;
     String contactNumber;
     Account account;
-    Set<Review> reviews;
 }

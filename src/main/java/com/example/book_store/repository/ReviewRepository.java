@@ -18,4 +18,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r LEFT JOIN FETCH r.book LEFT JOIN FETCH r.user")
     List<Review> getAllReviews();
 
+    @Query("SELECT r FROM Review r JOIN FETCH r.reviews review LEFT JOIN FETCH r.user  WHERE review.id = :id")
+    List<Review> getAnswerByReviewId(Long id);
+
+    @Query("SELECT r FROM Review r JOIN FETCH r.reviewAnswers ra LEFT JOIN FETCH r.user WHERE ra.id = :id")
+    List<Review> getReviewsByAnswerId(Long id);
+
 }
